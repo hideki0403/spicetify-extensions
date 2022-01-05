@@ -16,10 +16,9 @@
 
     function tweet(meta) {
         var parsedURI = meta.uri.split(':')
-        window.open(`https://twitter.com/intent/tweet?text=${meta.title} - ${meta.description}\nhttps://open.spotify.com/${parsedURI[1]}/${parsedURI[2]}&hashtags=Spotify`.replace('\n', '%0D%0A'))
+        var tweetText = encodeURIComponent(`${meta.title} - ${meta.description}\nhttps://open.spotify.com/${parsedURI[1]}/${parsedURI[2]}`)
+        window.open(`https://twitter.com/intent/tweet?text=${tweetText}&hashtags=Spotify`.replace('\n', '%0D%0A'))
     }
-
-    var controls = document.getElementsByClassName('ExtraControls')[0]
 
     var shareButton = document.createElement('div')
     shareButton.id = 'shareButton'
@@ -40,7 +39,18 @@
         })
     })
 
-    controls.insertBefore(shareButton, controls.firstElementChild)
+    function addController() {
+        var controls = document.getElementsByClassName('ExtraControls')[0]
+
+        if(!controls) {
+            addController()
+            return
+        }
+
+        controls.insertBefore(shareButton, controls.firstElementChild)
+    }
+
+    addController()
 
     async function shareMenu(uris, uid = [], context = undefined) {
         const uri = uris[0]
